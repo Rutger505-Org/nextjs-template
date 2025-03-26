@@ -62,17 +62,17 @@ resource "kubernetes_deployment" "app" {
         automount_service_account_token = false
 
         container {
-          name  = "next-template"
+          name  = var.application_name
           image = var.image
 
           resources {
             limits = {
               cpu    = "1000m"    # 1 CPU core
-              memory = "1024Mi"   # 1GB memory
+              memory = "512Mi"   # 1GB memory
             }
             requests = {
               cpu    = "250m"     # 0.25 CPU core
-              memory = "512Mi"    # 512MB memory
+              memory = "256Mi"    # 512MB memory
             }
           }
 
@@ -104,7 +104,8 @@ resource "kubernetes_deployment" "app" {
         volume {
           name = "sqlite-data"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.sqlite_db.metadata[0].name
+            # Prevent implicit dependency on the PVC
+            claim_name = "${var.application_name}-sqlite-db"
           }
         }
       }
