@@ -29,31 +29,6 @@ resource "kubernetes_secret" "app" {
   data = var.secrets
 }
 
-# Persistent Volume Claim for SQLite Database
-resource "kubernetes_persistent_volume_claim" "sqlite_db" {
-  depends_on = [
-    kubernetes_namespace.app,
-  ]
-
-  metadata {
-    name      = "${var.application_name}-sqlite-db"
-    namespace = kubernetes_namespace.app.metadata[0].name
-  }
-
-  spec {
-    access_modes = ["ReadWriteOnce"]
-
-    storage_class_name = "local-path"
-    
-    resources {
-      requests = {
-        storage = "100Mi"
-      }
-    }
-  }
-}
-
-
 # Deployment
 resource "kubernetes_deployment" "app" {
   depends_on = [
@@ -161,6 +136,31 @@ resource "kubernetes_service" "app" {
     type = "ClusterIP"
   }
 }
+
+# Persistent Volume Claim for SQLite Database
+resource "kubernetes_persistent_volume_claim" "sqlite_db" {
+  depends_on = [
+    kubernetes_namespace.app,
+  ]
+
+  metadata {
+    name      = "${var.application_name}-sqlite-db"
+    namespace = kubernetes_namespace.app.metadata[0].name
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+
+    storage_class_name = "local-path"
+
+    resources {
+      requests = {
+        storage = "100Mi"
+      }
+    }
+  }
+}
+
 
 # Ingress
 resource "kubernetes_ingress_v1" "app" {
