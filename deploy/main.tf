@@ -47,7 +47,7 @@ resource "kubernetes_persistent_volume_claim" "sqlite_db" {
     
     resources {
       requests = {
-        storage = "2Gi"
+        storage = "100Mi"
       }
     }
   }
