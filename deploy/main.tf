@@ -60,7 +60,6 @@ resource "kubernetes_deployment" "app" {
     kubernetes_namespace.app,
     kubernetes_config_map.app,
     kubernetes_secret.app,
-    kubernetes_persistent_volume_claim.sqlite_db
   ]
 
   metadata {
