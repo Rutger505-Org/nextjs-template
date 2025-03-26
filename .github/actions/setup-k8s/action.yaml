@@ -17,6 +17,7 @@ runs:
       uses: opentofu/setup-opentofu@v1
       with:
         tofu_version: ${{ inputs.tofu-version }}
+        tofu_wrapper: "false"
 
     - name: Cleanup Kubeconfig
       uses: ./.github/actions/utils/with-post-step

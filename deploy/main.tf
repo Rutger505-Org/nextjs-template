@@ -34,7 +34,7 @@ resource "kubernetes_deployment" "app" {
   depends_on = [
     kubernetes_namespace.app,
     kubernetes_config_map.app,
-    kubernetes_secret.app
+    kubernetes_secret.app,
   ]
 
   metadata {
@@ -62,17 +62,17 @@ resource "kubernetes_deployment" "app" {
         automount_service_account_token = false
 
         container {
-          name  = "next-template"
+          name  = var.application_name
           image = var.image
 
           resources {
             limits = {
               cpu    = "1000m"    # 1 CPU core
-              memory = "1024Mi"   # 1GB memory
+              memory = "512Mi"   # 1GB memory
             }
             requests = {
               cpu    = "250m"     # 0.25 CPU core
-              memory = "512Mi"    # 512MB memory
+              memory = "256Mi"    # 512MB memory
             }
           }
 
@@ -91,11 +91,28 @@ resource "kubernetes_deployment" "app" {
               name = kubernetes_secret.app.metadata[0].name
             }
           }
+
+          # Add volume mount for SQLite database
+          volume_mount {
+            name       = "sqlite-data"
+            mount_path = "/app/data/db.sqlite"
+            read_only  = false
+          }
+        }
+
+        # Define the volume that references the PVC
+        volume {
+          name = "sqlite-data"
+          persistent_volume_claim {
+            # Prevent implicit dependency on the PVC
+            claim_name = "${var.application_name}-sqlite-db"
+          }
         }
       }
     }
   }
 }
+
 
 # Service
 resource "kubernetes_service" "app" {
@@ -120,6 +137,31 @@ resource "kubernetes_service" "app" {
     type = "ClusterIP"
   }
 }
+
+# Persistent Volume Claim for SQLite Database
+resource "kubernetes_persistent_volume_claim" "sqlite_db" {
+  depends_on = [
+    kubernetes_namespace.app,
+  ]
+
+  metadata {
+    name      = "${var.application_name}-sqlite-db"
+    namespace = kubernetes_namespace.app.metadata[0].name
+  }
+
+  spec {
+    access_modes = ["ReadWriteOnce"]
+
+    storage_class_name = "local-path"
+
+    resources {
+      requests = {
+        storage = "100Mi"
+      }
+    }
+  }
+}
+
 
 # Ingress
 resource "kubernetes_ingress_v1" "app" {
