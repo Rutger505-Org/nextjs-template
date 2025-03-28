@@ -68,7 +68,7 @@ resource "kubernetes_deployment" "app" {
             "sh",
             "-c",
             "cd /app && bun i drizzle-kit --no-save bunx drizzle-kit migrate"
-            ]
+          ]
         }
         
         
@@ -106,7 +106,7 @@ resource "kubernetes_deployment" "app" {
           # Add volume mount for SQLite database
           volume_mount {
             name       = "sqlite-data"
-            mount_path = "/app/data/db.sqlite"
+            mount_path = "/app/data"
             read_only  = false
           }
         }
