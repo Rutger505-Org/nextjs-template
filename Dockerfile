@@ -43,7 +43,8 @@ RUN addgroup --system --gid 1001 nodejs \
 USER nextjs
 
 COPY drizzle.config.ts ./
-COPY drizzle ./
+COPY drizzle ./drizzle
+COPY package.json ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
