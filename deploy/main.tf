@@ -107,7 +107,7 @@ resource "kubernetes_deployment" "app" {
           # Add volume mount for SQLite database
           volume_mount {
             name       = "sqlite-data"
-            mount_path = "/app/data"
+            mount_path = "/app/data/"
             read_only  = false
           }
         }
