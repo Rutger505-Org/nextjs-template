@@ -67,8 +67,7 @@ resource "kubernetes_deployment" "app" {
           command = [
             "sh",
             "-c",
-            "cd /app && ls -al && mkdir data  2>&1 > /dev/null && ls -al && bun i drizzle-kit --no-install --no-save && bunx drizzle-kit migrate 2>&1 > /dev/null && sleep 3600"
-            # "cd /app && ls -al && cd data && ls -al && cd .. && bun i drizzle-kit --no-install --no-save && bunx drizzle-kit migrate 2>&1 > /dev/null && sleep 3600"
+            "cd /app && ls -al && mkdir data && ls -al && bun i drizzle-kit --no-install --no-save && bunx drizzle-kit migrate"
           ]
           security_context {
             run_as_user = "0"
