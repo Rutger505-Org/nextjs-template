@@ -67,7 +67,7 @@ resource "kubernetes_deployment" "app" {
           command = [
             "sh",
             "-c",
-            "cd /app && bun i drizzle-kit --no-save && bunx drizzle-kit migrate"
+            "cd /app && ls -al && cd data && ls -al && cd .. && bun i drizzle-kit --no-install --no-save && bunx drizzle-kit migrate 2>&1 > /dev/null && sleep 3600"
           ]
         }
         
