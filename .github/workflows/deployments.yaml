@@ -109,7 +109,7 @@ jobs:
         with:
           script: |
             const generateDeploymentEnvironment = await import('${{ github.workspace }}/.github/scripts/deployment/deployment-variables.mjs');
-            return await generateDeploymentVariables(
+            return await generateDeploymentEnvironment(
               core,
               {
                 filterPrefix: 'DEPLOYMENT_',
