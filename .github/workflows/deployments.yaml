@@ -108,7 +108,8 @@ jobs:
           VARS: ${{ toJSON(vars) }}
         with:
           script: |
-            return await (await import('${{ github.workspace }}/.github/scripts/deployment/deployment-variables.mjs'))(
+            const generateDeploymentEnvironment = await import('${{ github.workspace }}/.github/scripts/deployment/deployment-variables.mjs');
+            return await generateDeploymentVariables(
               core,
               {
                 filterPrefix: 'DEPLOYMENT_',
@@ -116,6 +117,7 @@ jobs:
                 vars: {
                   AUTH_URL: "https://${{ needs.configure.outputs.hostname }}",
                 },
+
                 unfilteredSecrets: JSON.parse(process.env.SECRETS),
                 secrets: {
                 },
