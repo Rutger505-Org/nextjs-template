@@ -108,7 +108,7 @@ jobs:
           VARS: ${{ toJSON(vars) }}
         with:
           script: |
-            const generateDeploymentEnvironment = await import('${{ github.workspace }}/.github/scripts/deployment/deployment-variables.mjs');
+            const { default: generateDeploymentEnvironment } = await import('${{ github.workspace }}/.github/scripts/deployment/deployment-variables.mjs');
             return await generateDeploymentEnvironment(
               core,
               {
