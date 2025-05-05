@@ -41,6 +41,12 @@ resource "kubernetes_deployment" "app" {
     name      = "${var.application_name}-deployment"
     namespace = kubernetes_namespace.app.metadata[0].name
   }
+  
+  timeouts {
+    create = "1m"
+    update = "1m"
+    delete = "1m"
+  }
 
   spec {
     replicas = var.replicas
