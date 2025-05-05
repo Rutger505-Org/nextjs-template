@@ -36,20 +36,6 @@ export const posts = sqliteTable(
   }),
 );
 
-export const categories = sqliteTable("categories", {
-  id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
-  name: text("name", { length: 256 }).notNull(),
-  createdById: text("created_by", { length: 255 })
-    .notNull()
-    .references(() => users.id),
-  createdAt: int("created_at", { mode: "timestamp" })
-    .default(sql`(unixepoch())`)
-    .notNull(),
-  updatedAt: int("updatedAt", { mode: "timestamp" }).$onUpdate(
-    () => new Date(),
-  ),
-});
-
 export const users = sqliteTable("user", {
   id: text("id", { length: 255 })
     .notNull()
