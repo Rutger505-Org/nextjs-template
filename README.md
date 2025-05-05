@@ -54,7 +54,7 @@ When thats done you can run the migration command again.
 
 #### Database in Kubernetes
 
-You can copy the sqlite file over with this command:
+You can copy the sqlite file over this command:
 
 ```bash
 kubectl cp <namespace>/<pod-name>:/app/data/db.sqlite ./prod-db.sqlite
@@ -62,7 +62,7 @@ kubectl cp <namespace>/<pod-name>:/app/data/db.sqlite ./prod-db.sqlite
 
 With k9s you can copy the pod name with `c`
 
-Windows with Datagrip shows a warning that locking issues will occur because of WSL.
+Windows with Datagrip shows a warning locking issues will occur because of WSL.
 Copy the file to your Windows filesystem with the following command:
 
 ```bash
