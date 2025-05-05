@@ -33,4 +33,4 @@ cp .env.example .env
 
 ## Deployments
 
-To configure deployment variables. create a github variable or secret and prefix it with `DEPLOYMENT_`.
+To configure deployment variables. Create a Github variable or secret and prefix it with `DEPLOYMENT_`.
