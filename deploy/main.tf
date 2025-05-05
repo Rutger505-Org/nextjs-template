@@ -73,10 +73,13 @@ resource "kubernetes_deployment" "app" {
           command = [
             "sh",
             "-c",
-            "cd /app && ls -al && mkdir data && ls -al && bun i drizzle-kit --no-install --no-save && bunx drizzle-kit migrate"
+            "cd /app && ls -al && bunx drizzle-kit migrate"
           ]
-          security_context {
-            run_as_user = "0"
+          
+          volume_mount {
+            name       = "sqlite-data"
+            mount_path = "/app/data/"
+            read_only  = false
           }
         }
         
@@ -112,7 +115,6 @@ resource "kubernetes_deployment" "app" {
             }
           }
 
-          # Add volume mount for SQLite database
           volume_mount {
             name       = "sqlite-data"
             mount_path = "/app/data/"
@@ -120,7 +122,6 @@ resource "kubernetes_deployment" "app" {
           }
         }
 
-        # Define the volume that references the PVC
         volume {
           name = "sqlite-data"
           persistent_volume_claim {
