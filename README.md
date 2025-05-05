@@ -47,6 +47,12 @@ To create a new migration, run the following command:
 bun db:generate -- --name "<migration-name>"
 ```
 
+Then to run all migrations, run:
+
+```bash
+bun db:migrate
+```
+
 When migration is imperfect,
 delete the migration file, delete the new snapshot file in the meta-folder and roll back the \_journal.json file.
 
