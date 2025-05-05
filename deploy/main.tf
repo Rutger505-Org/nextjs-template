@@ -73,7 +73,7 @@ resource "kubernetes_deployment" "app" {
           command = [
             "sh",
             "-c",
-            "cd /app && ls -al && bunx drizzle-kit migrate"
+            "cd /app && bun db:migrate"
           ]
           
           volume_mount {
