@@ -37,7 +37,22 @@ To configure deployment variables. Create a Github variable or secret and prefix
 
 ## Guides
 
-### Looking at db in kubernetes
+### Database
+
+#### Migrations
+
+To create a new migration, run the following command:
+
+```bash
+bun db:generate -- --name "<migration-name>"
+```
+
+When migration is imperfect,
+delete the migration file, delete the new snapshot file in the meta-folder and roll back the \_journal.json file.
+
+When thats done you can run the migration command again.
+
+#### Database in Kubernetes
 
 You can copy the sqlite file over with this command:
 
