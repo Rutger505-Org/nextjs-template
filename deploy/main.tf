@@ -125,7 +125,7 @@ resource "kubernetes_deployment" "app" {
         volume {
           name = "sqlite-data"
           persistent_volume_claim {
-            # Prevent implicit dependency on the PVC
+            # Prevent implicit dependency on the PVC by referencing it. The PVC is only finalized when a reference to it is created.
             claim_name = "${var.application_name}-sqlite-db"
           }
         }

@@ -42,15 +42,17 @@ RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
 USER nextjs
 
+COPY --chown=nextjs:nodejs package.json bun.lock ./
+
 COPY --chown=nextjs:nodejs drizzle.config.ts ./
 COPY --chown=nextjs:nodejs drizzle ./drizzle
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/.next/ ./.next
 COPY --from=builder /app/public ./public
 
 EXPOSE 3000
 ENV PORT=3000
-
 ENV HOSTNAME="0.0.0.0"
-CMD ["bun", "server.js"]
 
+CMD ["bun", "server.js"]
