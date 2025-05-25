@@ -23,11 +23,6 @@ COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 
-FROM base AS migrations
-
-RUN bun install drizzle-kit@0.31.1 # Update when updating in bun.lock
-
-
 FROM base AS builder
 
 # Client side environment variables must be set here.
@@ -43,17 +38,16 @@ FROM base AS production
 
 ENV NODE_ENV=production
 
-
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
 USER nextjs
 
+RUN bun install drizzle-kit@0.31.1
+
 # Migrations
-COPY --from=migrations --chown=nextjs:nodejs /app/node_modules ./
 COPY --chown=nextjs:nodejs package.json bun.lock ./
 COPY --chown=nextjs:nodejs drizzle.config.ts ./
 COPY --chown=nextjs:nodejs drizzle ./drizzle
-
 
 # Web application
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
