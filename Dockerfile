@@ -38,13 +38,14 @@ FROM base AS production
 
 ENV NODE_ENV=production
 
+RUN bun install --global drizzle-kit@0.31.1 # Update when updating in bun.lock
+
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
 USER nextjs
 
 # Migrations
-RUN bun install --global drizzle-kit@0.31.1 # Update when updating in bun.lock
-
+COPY --chown=nextjs:nodejs package.json bun.lock ./
 COPY --chown=nextjs:nodejs drizzle.config.ts ./
 COPY --chown=nextjs:nodejs drizzle ./drizzle
 
