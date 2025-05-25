@@ -1,26 +1,30 @@
 // @ts-check
 
-function filterDeploymentConfig(jsonObject) {
-  const parcedObject = JSON.parse(jsonObject);
-
-  const deploymentValues = Object.entries(parcedObject)
-    .filter(([key]) => key.startsWith("DEPLOYMENT_"))
+function pickEntriesWithKeyPrefix(prefix, object) {
+  const picked = Object.entries(object)
+    .filter(([key]) => key.startsWith(prefix))
     .map(([key, value]) => {
-      const newKey = key.replace("DEPLOYMENT_", "");
+      const newKey = key.replace(prefix, "");
       return [newKey, value];
     });
 
-  return Object.fromEntries(deploymentValues);
+  return Object.fromEntries(picked);
 }
 
-export default async function generateDeploymentVr({ core }) {
+export default async function generateDeploymentEnvironment(
+  core,
+  { filterPrefix, unfilteredVars, vars, unfilteredSecrets, secrets },
+) {
   try {
-    const filteredVars = filterDeploymentConfig(process.env.VARS);
-    const filteredSecrets = filterDeploymentConfig(process.env.SECRETS);
+    const filteredVars = pickEntriesWithKeyPrefix(filterPrefix, unfilteredVars);
+    const filteredSecrets = pickEntriesWithKeyPrefix(
+      filterPrefix,
+      unfilteredSecrets,
+    );
 
     const config = {
-      vars: filteredVars,
-      secrets: filteredSecrets,
+      vars: { ...filteredVars, ...vars },
+      secrets: { ...filteredSecrets, ...secrets },
     };
 
     Object.entries(config).forEach(([key, value]) => {

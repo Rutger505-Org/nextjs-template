@@ -33,4 +33,44 @@ cp .env.example .env
 
 ## Deployments
 
-To configure deployment variables. create a github variable or secret and prefix it with `DEPLOYMENT_`.
+To configure deployment variables. Create a Github variable or secret and prefix it with `DEPLOYMENT_`.
+
+## Guides
+
+### Database
+
+#### Migrations
+
+To create a new migration, run the following command:
+
+```bash
+bun db:generate -- --name "<migration-name>"
+```
+
+Then to run all migrations, run:
+
+```bash
+bun db:migrate
+```
+
+When migration is imperfect,
+delete the migration file, delete the new snapshot file in the meta-folder and roll back the \_journal.json file.
+
+When thats done you can run the migration command again.
+
+#### Database in Kubernetes
+
+You can copy the sqlite file over this command:
+
+```bash
+kubectl cp <namespace>/<pod-name>:/app/data/db.sqlite ./prod-db.sqlite
+```
+
+With k9s you can copy the pod name with `c`
+
+Windows with Datagrip shows a warning locking issues will occur because of WSL.
+Copy the file to your Windows filesystem with the following command:
+
+```bash
+kubectl cp <namespace>/<pod-name>:/app/data/db.sqlite  /mnt/c/Users/<user>/Documents/
+```

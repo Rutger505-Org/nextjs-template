@@ -108,8 +108,21 @@ jobs:
           VARS: ${{ toJSON(vars) }}
         with:
           script: |
-            const { default: generateDeploymentVariables } = await import('${{ github.workspace }}/.github/scripts/deployment/deployment-variables.mjs');
-            return await generateDeploymentVariables({ core });
+            const { default: generateDeploymentEnvironment } = await import('${{ github.workspace }}/.github/scripts/deployment/deployment-variables.mjs');
+            return await generateDeploymentEnvironment(
+              core,
+              {
+                filterPrefix: 'DEPLOYMENT_',
+                unfilteredVars: JSON.parse(process.env.VARS),
+                vars: {
+                  AUTH_URL: "https://${{ needs.configure.outputs.hostname }}/api/auth",
+                },
+
+                unfilteredSecrets: JSON.parse(process.env.SECRETS),
+                secrets: {
+                },
+              },
+            );
 
       - name: OpenTofu Apply
         working-directory: ./deploy

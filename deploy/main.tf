@@ -41,6 +41,12 @@ resource "kubernetes_deployment" "app" {
     name      = "${var.application_name}-deployment"
     namespace = kubernetes_namespace.app.metadata[0].name
   }
+  
+  timeouts {
+    create = "1m"
+    update = "1m"
+    delete = "1m"
+  }
 
   spec {
     replicas = var.replicas
@@ -61,6 +67,23 @@ resource "kubernetes_deployment" "app" {
       spec {
         automount_service_account_token = false
 
+        init_container {
+          name = "${var.application_name}-migrate-db"
+          image = var.image
+          command = [
+            "sh",
+            "-c",
+            "cd /app && bun db:migrate"
+          ]
+          
+          volume_mount {
+            name       = "sqlite-data"
+            mount_path = "/app/data/"
+            read_only  = false
+          }
+        }
+        
+        
         container {
           name  = var.application_name
           image = var.image
@@ -92,49 +115,22 @@ resource "kubernetes_deployment" "app" {
             }
           }
 
-          # Add volume mount for SQLite database
           volume_mount {
             name       = "sqlite-data"
-            mount_path = "/app/data/db.sqlite"
+            mount_path = "/app/data/"
             read_only  = false
           }
         }
 
-        # Define the volume that references the PVC
         volume {
           name = "sqlite-data"
           persistent_volume_claim {
-            # Prevent implicit dependency on the PVC
+            # Prevent implicit dependency on the PVC by referencing it. The PVC is only finalized when a reference to it is created.
             claim_name = "${var.application_name}-sqlite-db"
           }
         }
       }
     }
-  }
-}
-
-
-# Service
-resource "kubernetes_service" "app" {
-  depends_on = [kubernetes_namespace.app]
-
-  metadata {
-    name      = "${var.application_name}-service"
-    namespace = kubernetes_namespace.app.metadata[0].name
-  }
-
-  spec {
-    selector = {
-      app =  kubernetes_deployment.app.metadata[0].name
-    }
-
-    port {
-      port        = 80
-      target_port = var.application_port
-      protocol    = "TCP"
-    }
-
-    type = "ClusterIP"
   }
 }
 
@@ -162,6 +158,29 @@ resource "kubernetes_persistent_volume_claim" "sqlite_db" {
   }
 }
 
+# Service
+resource "kubernetes_service" "app" {
+  depends_on = [kubernetes_namespace.app]
+
+  metadata {
+    name      = "${var.application_name}-service"
+    namespace = kubernetes_namespace.app.metadata[0].name
+  }
+
+  spec {
+    selector = {
+      app =  kubernetes_deployment.app.metadata[0].name
+    }
+
+    port {
+      port        = 80
+      target_port = var.application_port
+      protocol    = "TCP"
+    }
+
+    type = "ClusterIP"
+  }
+}
 
 # Ingress
 resource "kubernetes_ingress_v1" "app" {
