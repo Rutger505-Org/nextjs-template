@@ -25,7 +25,7 @@ RUN bun install --frozen-lockfile
 
 FROM base AS migrations
 
-RUN bun install --global drizzle-kit@0.31.1 # Update when updating in bun.lock
+RUN bun install drizzle-kit@0.31.1 # Update when updating in bun.lock
 
 
 FROM base AS builder
@@ -49,8 +49,8 @@ RUN addgroup --system --gid 1001 nodejs \
 USER nextjs
 
 # Migrations
+COPY --from=migrations --chown=nextjs:nodejs /app/node_modules ./
 COPY --chown=nextjs:nodejs package.json bun.lock ./
-COPY --chown=nextjs:nodejs /app/node-modules ./
 COPY --chown=nextjs:nodejs drizzle.config.ts ./
 COPY --chown=nextjs:nodejs drizzle ./drizzle
 
