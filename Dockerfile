@@ -38,7 +38,7 @@ FROM base AS production
 
 ENV NODE_ENV=production
 
-RUN bun install drizzle-kit@0.31.1 drizzle-orm@0.43.1
+RUN bun install drizzle-kit@0.31.1 drizzle-orm@0.43.1 @libsql/client@0.14.0
 
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
