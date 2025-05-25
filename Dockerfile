@@ -38,11 +38,12 @@ FROM base AS production
 
 ENV NODE_ENV=production
 
+RUN bun install drizzle-kit@0.31.1
+
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
-USER nextjs
 
-RUN bun install drizzle-kit@0.31.1
+RUN chown -R nextjs:nodejs /app
 
 # Migrations
 COPY --chown=nextjs:nodejs package.json bun.lock ./
