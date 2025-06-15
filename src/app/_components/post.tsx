@@ -1,6 +1,5 @@
 "use client";
 
-import { sendDiscordMessage } from "@/lib/discord";
 import { api } from "@/trpc/react";
 import { type api as serverApi } from "@/trpc/server";
 import { type Session } from "next-auth";
@@ -9,10 +8,10 @@ import { useState } from "react";
 export function Post({
   post,
   session,
-}: {
+}: Readonly<{
   post: Awaited<ReturnType<(typeof serverApi.post)["getAll"]>>[number];
   session: Session | null;
-}) {
+}>) {
   const updatePostMutation = api.post.update.useMutation();
   const [isEditing, setIsEditing] = useState(false);
   const [postName, setPostName] = useState(post.name);
@@ -31,7 +30,6 @@ export function Post({
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update post:", error);
-      await sendDiscordMessage("Failed to update post: " + error?.toString());
     }
   };
 

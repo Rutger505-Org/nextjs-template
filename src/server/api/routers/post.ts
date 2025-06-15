@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { sendDiscordMessage } from "@/lib/discord";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -24,6 +25,7 @@ export const postRouter = createTRPCRouter({
         name: input.name,
         createdById: ctx.session.user.id,
       });
+      await sendDiscordMessage(`New post created: ${input.name}`);
     }),
 
   update: protectedProcedure
