@@ -4,7 +4,7 @@ import { Post } from "@/app/_components/post";
 import { api } from "@/trpc/react"; // Use the React TRPC client
 import { type Session } from "next-auth";
 
-export function PostList({ session }: { session: Session | null }) {
+export function PostList({ session }: Readonly<{ session: Session | null }>) {
   const { data: posts = [] } = api.post.getAll.useQuery();
 
   return (

@@ -1,6 +1,6 @@
 import { env } from "@/env";
-import { Database } from "bun:sqlite";
-import { drizzle } from "drizzle-orm/bun-sqlite";
+import Database, { type Database as DatabaseType } from "better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
 import * as schema from "./schema";
 
 /**
@@ -8,7 +8,7 @@ import * as schema from "./schema";
  * update.
  */
 const globalForDb = globalThis as unknown as {
-  client: Database | undefined;
+  client: DatabaseType | undefined;
 };
 
 export const client =
