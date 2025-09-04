@@ -7,19 +7,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [name, setName] = useState("");
 
   const mutation = useMutation({
     mutationFn: () =>
       signUp.email({
         email,
-        name: "test", //todo
+        name,
         password,
         callbackURL: "/",
       }),
@@ -38,6 +37,17 @@ export default function SignUpPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="Your name"
+              />
+            </div>
             <div>
               <Label htmlFor="email">Email</Label>
               <Input
