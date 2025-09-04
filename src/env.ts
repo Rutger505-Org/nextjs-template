@@ -10,7 +10,7 @@ export const env = createEnv({
       .optional()
       .default("development"),
 
-    BETTER_AUTH_SECRET: z.string(),
+    AUTH_SECRET: z.string(),
 
     AUTH_EMAIL_FROM: z.string(),
     AUTH_EMAIL_HOST: z.string(),
