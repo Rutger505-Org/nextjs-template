@@ -19,6 +19,7 @@ CMD ["bun", "run", "dev"]
 FROM base AS deps
 
 COPY package.json bun.lock ./
+
 RUN bun install --frozen-lockfile
 
 
