@@ -15,11 +15,11 @@ export default async function Home() {
             messages for showing usage of these tools
           </h2>
         </div>
-        {session ? (
-          <div className={"flex flex-col items-center space-y-2.5"}>
-            <span className={"text-center"}>
-              Session: {JSON.stringify(session)}
-            </span>
+        <div className={"flex flex-col items-center space-y-2.5"}>
+          <span className={"text-center"}>
+            Session: {session ? JSON.stringify(session) : "No session"}
+          </span>
+          {session ? (
             <form
               action={async () => {
                 "use server";
@@ -28,17 +28,17 @@ export default async function Home() {
             >
               <button type="submit">Sign Out</button>
             </form>
-          </div>
-        ) : (
-          <form
-            action={async () => {
-              "use server";
-              await signIn();
-            }}
-          >
-            <button type="submit">Sign In</button>
-          </form>
-        )}
+          ) : (
+            <form
+              action={async () => {
+                "use server";
+                await signIn();
+              }}
+            >
+              <button type="submit">Sign In</button>
+            </form>
+          )}
+        </div>
 
         <div className={"flex flex-col gap-7"}>
           {session && <PostCreate />}
