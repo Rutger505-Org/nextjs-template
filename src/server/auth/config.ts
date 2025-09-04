@@ -9,9 +9,10 @@ import {
   users,
   verificationTokens,
 } from "@/server/db/schema";
+import { type Adapter } from "@auth/core/adapters";
+import { randomUUID } from "crypto";
 import Credentials from "next-auth/providers/credentials";
 import Nodemailer from "next-auth/providers/nodemailer";
-import { randomUUID } from "node:crypto";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -33,6 +34,16 @@ declare module "next-auth" {
   //   // role: UserRole;
   // }
 }
+// TODO finish https://github.com/nextauthjs/next-auth/discussions/4394#discussioncomment-3293618
+const drizzleAdapter: Required<
+  Pick<Adapter, "createSession" | "getSessionAndUser" | "deleteSession">
+> &
+  Adapter = DrizzleAdapter(db, {
+  usersTable: users,
+  accountsTable: accounts,
+  sessionsTable: sessions,
+  verificationTokensTable: verificationTokens,
+});
 
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
@@ -64,39 +75,53 @@ export const authConfig = {
           return null;
         }
 
-        console.log("Authorizing user...");
-        return {
-          id: randomUUID(),
-          name: "Test User",
-          email: "hi@example.com",
+        const user = {
+          id: "1",
+          email: credentials.email,
+          name: "Demo User",
+          image: null,
         };
 
-        // 🔑 Example: look up user in Drizzle
-        const user = await db.query.users.findFirst({
-          where: (u, { eq }) => eq(u.email, credentials.email),
+        const token = randomUUID();
+        await drizzleAdapter.createSession({
+          userId: user.id,
+          expires: new Date(Date.now() + maxAge * 1000),
+          sessionToken: token,
         });
-
-        if (!user) return null;
-
-        // ⚠️ Replace with proper password hashing (e.g. bcrypt)
-        const isValidPassword = credentials.password === "test123"; // placeholder
-        if (!isValidPassword) return null;
-
-        // return {
-        //   id: user.id,
-        //   name: user.name,
-        //   email: user.email,
-        // };
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          sessionToken: token,
+        };
       },
     }),
   ],
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  }),
+  adapter: drizzleAdapter,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id;
+        token.sessionToken = user.sessionToken;
+      }
+
+      if (token?.sessionToken) {
+        const { session } = await drizzleAdapter.getSessionAndUser(
+          token.sessionToken,
+        );
+        if (!session) {
+          return null;
+        }
+      }
+
+      return token;
+    },
     session: ({ session, user }) => ({
       ...session,
       user: {
@@ -104,6 +129,19 @@ export const authConfig = {
         id: user.id,
       },
     }),
+  },
+  events: {
+    signOut: async ({ token }) => {
+      if (
+        typeof token === "object" &&
+        token !== null &&
+        "sessionToken" in token &&
+        token.sessionToken &&
+        drizzleAdapter?.deleteSession
+      ) {
+        await drizzleAdapter.deleteSession(token.sessionToken);
+      }
+    },
   },
   trustHost: true,
 } satisfies NextAuthConfig;
