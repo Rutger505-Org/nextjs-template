@@ -9,7 +9,9 @@ import {
   users,
   verificationTokens,
 } from "@/server/db/schema";
-import Nodemailer from "@auth/core/providers/nodemailer";
+import Credentials from "next-auth/providers/credentials";
+import Nodemailer from "next-auth/providers/nodemailer";
+import { randomUUID } from "node:crypto";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -48,6 +50,43 @@ export const authConfig = {
           user: env.AUTH_EMAIL_USER,
           pass: env.AUTH_EMAIL_PASSWORD,
         },
+      },
+    }),
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      authorize: async (credentials) => {
+        console.log(credentials);
+
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        console.log("Authorizing user...");
+        return {
+          id: randomUUID(),
+          name: "Test User",
+          email: "hi@example.com",
+        };
+
+        // 🔑 Example: look up user in Drizzle
+        const user = await db.query.users.findFirst({
+          where: (u, { eq }) => eq(u.email, credentials.email),
+        });
+
+        if (!user) return null;
+
+        // ⚠️ Replace with proper password hashing (e.g. bcrypt)
+        const isValidPassword = credentials.password === "test123"; // placeholder
+        if (!isValidPassword) return null;
+
+        // return {
+        //   id: user.id,
+        //   name: user.name,
+        //   email: user.email,
+        // };
       },
     }),
   ],
