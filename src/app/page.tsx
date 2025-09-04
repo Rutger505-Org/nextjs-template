@@ -1,6 +1,6 @@
 import { PostCreate } from "@/app/_components/post-create";
 import { PostList } from "@/app/_components/post-list";
-import { signOut } from "@/client/auth";
+import { SignOutButton } from "@/app/_components/sign-out-button";
 import { auth } from "@/server/auth";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -24,11 +24,7 @@ export default async function Home() {
           <span className={"text-center"}>
             Session: {session ? JSON.stringify(session) : "No session"}
           </span>
-          {session ? (
-            <button onClick={() => signOut()}>Sign Out</button>
-          ) : (
-            <Link href={"sign-in"}>Sign In</Link>
-          )}
+          {session ? <SignOutButton /> : <Link href={"sign-in"}>Sign In</Link>}
         </div>
 
         <div className={"flex flex-col gap-7"}>

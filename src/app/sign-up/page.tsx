@@ -1,6 +1,6 @@
 "use client";
 
-import { signIn } from "@/client/auth";
+import { signUp } from "@/client/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,14 +10,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-export default function SignInPage() {
+export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: () =>
-      signIn.email({ email, password, rememberMe: true, callbackURL: "/" }),
+      signUp.email({
+        email,
+        name: "test", //todo
+        password,
+        callbackURL: "/",
+      }),
   });
 
   function handleSubmit(e: React.FormEvent) {
@@ -29,7 +34,7 @@ export default function SignInPage() {
     <div className="flex min-h-screen items-center justify-center">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Sign in</CardTitle>
+          <CardTitle>Sign up</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -59,7 +64,7 @@ export default function SignInPage() {
 
             {mutation.isError && (
               <div className="text-sm text-red-600">
-                {mutation.error?.message ?? "Sign in failed"}
+                {mutation.error?.message ?? "Sign up failed"}
               </div>
             )}
 
@@ -68,13 +73,13 @@ export default function SignInPage() {
               disabled={mutation.isPending}
               className="w-full"
             >
-              {mutation.isPending ? "Signing in..." : "Sign in"}
+              {mutation.isPending ? "Signing up..." : "Sign up"}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-gray-600">
-            Don’t have an account?{" "}
-            <Link href="/sign-up" className="text-blue-600 hover:underline">
-              Sign up
+            Already have an account?{" "}
+            <Link href="/sign-in" className="text-blue-600 hover:underline">
+              Sign in
             </Link>
           </p>
         </CardContent>
