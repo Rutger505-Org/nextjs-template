@@ -1,7 +1,7 @@
 "use client";
 
 import { Post } from "@/app/_components/post";
-import { api } from "@/trpc/react"; // Use the React TRPC client
+import { api } from "@/trpc/react";
 import { type Session } from "next-auth";
 
 export function PostList({ session }: { session: Session | null }) {

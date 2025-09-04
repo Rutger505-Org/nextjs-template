@@ -1,6 +1,7 @@
 "use client";
 
-import { sendDiscordMessage } from "@/lib/discord";
+import { sendDiscordMessage } from "@/server/discord";
+
 import { api } from "@/trpc/react";
 import { useState } from "react";
 
