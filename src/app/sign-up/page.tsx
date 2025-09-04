@@ -1,32 +1,45 @@
 "use client";
 
-import { signUp } from "@/client/auth";
+import { signUp, useSession } from "@/client/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 export default function SignUpPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
   const mutation = useMutation({
-    mutationFn: () =>
-      signUp.email({
+    mutationFn: async () => {
+      const response = await signUp.email({
         email,
         name,
         password,
-        callbackURL: "/",
-      }),
+      });
+      if (response.error) {
+        throw new Error(response.error.message ?? "Sign up failed");
+      }
+
+      router.push("/");
+    },
   });
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     mutation.mutate();
+  }
+  if (session) {
+    router.push("/");
+    return null;
   }
 
   return (
