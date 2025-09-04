@@ -19,14 +19,6 @@ CMD ["bun", "run", "dev"]
 FROM base AS deps
 
 COPY package.json bun.lock ./
-RUN apk add --no-cache \
-    gcc \
-    g++ \
-    linux-headers \
-    make \
-    musl-dev \
-    python3 \
-    sqlite-dev
 RUN bun install --frozen-lockfile
 
 
