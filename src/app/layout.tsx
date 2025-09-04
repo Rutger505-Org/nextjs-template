@@ -1,5 +1,6 @@
 import { TRPCReactProvider } from "@/trpc/react";
 import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react"; // ✅ import
 import { Geist, Geist_Mono } from "next/font/google";
 import { type ReactNode } from "react";
 import "./globals.css";
@@ -29,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <SessionProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </SessionProvider>
       </body>
     </html>
   );

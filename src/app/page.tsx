@@ -1,3 +1,4 @@
+import { Header } from "@/app/_components/header/header";
 import { PostCreate } from "@/app/_components/post-create";
 import { PostList } from "@/app/_components/post-list";
 import { auth, signIn, signOut } from "@/server/auth";
@@ -7,6 +8,7 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
+      <Header />
       <main className={"flex flex-col items-center justify-center gap-10"}>
         <div className={"flex flex-col items-center space-y-2.5"}>
           <h1 className="text-4xl font-bold">Hi There!</h1>
