@@ -2,18 +2,17 @@
 
 import { sendDiscordMessage } from "@/server/discord";
 
+import { useSession } from "@/client/auth";
 import { api } from "@/trpc/react";
 import { type api as serverApi } from "@/trpc/server";
-import { type Session } from "next-auth";
 import { useState } from "react";
 
 export function Post({
   post,
-  session,
-}: {
+}: Readonly<{
   post: Awaited<ReturnType<(typeof serverApi.post)["getAll"]>>[number];
-  session: Session | null;
-}) {
+}>) {
+  const { data: session } = useSession();
   const updatePostMutation = api.post.update.useMutation();
   const [isEditing, setIsEditing] = useState(false);
   const [postName, setPostName] = useState(post.name);
