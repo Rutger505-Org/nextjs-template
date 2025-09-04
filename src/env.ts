@@ -1,5 +1,4 @@
 import { createEnv } from "@t3-oss/env-nextjs";
-import { z } from "zod";
 
 export const env = createEnv({
   server: {
@@ -10,13 +9,14 @@ export const env = createEnv({
       .optional()
       .default("development"),
 
-    AUTH_SECRET: z.string(),
+    BETTER_AUTH_SECRET: z.string(),
 
-    AUTH_EMAIL_FROM: z.string(),
-    AUTH_EMAIL_HOST: z.string(),
-    AUTH_EMAIL_PORT: z.coerce.number(),
-    AUTH_EMAIL_USER: z.string(),
-    AUTH_EMAIL_PASSWORD: z.string(),
+    // TODO implement magic link
+    // AUTH_EMAIL_FROM: z.string(),
+    // AUTH_EMAIL_HOST: z.string(),
+    // AUTH_EMAIL_PORT: z.coerce.number(),
+    // AUTH_EMAIL_USER: z.string(),
+    // AUTH_EMAIL_PASSWORD: z.string(),
   },
   // Prefixed with NEXT_PUBLIC_
   client: {},
