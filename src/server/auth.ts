@@ -26,7 +26,7 @@ export const auth = betterAuth({
     magicLink({
       disableSignUp: false,
 
-      sendMagicLink: async ({ email, url }, request) => {
+      sendMagicLink: async ({ email, url }) => {
         const result = await transporter.sendMail({
           to: email,
           from: env.AUTH_EMAIL_FROM,
