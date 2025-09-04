@@ -1,6 +1,7 @@
 "use client";
 
-import { sendDiscordMessage } from "@/lib/discord";
+import { sendDiscordMessage } from "@/server/discord";
+
 import { api } from "@/trpc/react";
 import { type api as serverApi } from "@/trpc/server";
 import { type Session } from "next-auth";
