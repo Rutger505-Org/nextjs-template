@@ -4,13 +4,27 @@ Next.js template for my personal needs.
 
 ## Getting started
 
-### Installation and Configuration
+### Development
 
 Copy the [.env.example](.env.example) file to a new file `.env` and fill in the variables.
 
 ```bash
 cp .env.example .env
 ```
+
+Run the database migration command:
+
+```bash
+bun db:migrate
+```
+
+Then start the development server:
+
+```bash
+bun dev
+```
+
+### Using template
 
 #### Variables
 
