@@ -5,22 +5,22 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import { posts } from "@/server/db/schema";
+import { post } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const posts = await ctx.db.query.posts.findMany({
-      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+    const post = await ctx.db.query.post.findMany({
+      orderBy: (post, { desc }) => [desc(post.createdAt)],
     });
 
-    return posts ?? null;
+    return post ?? null;
   }),
 
   create: protectedProcedure
     .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(posts).values({
+      await ctx.db.insert(post).values({
         name: input.name,
         createdById: ctx.session.user.id,
       });
@@ -30,8 +30,8 @@ export const postRouter = createTRPCRouter({
     .input(z.object({ id: z.number(), newName: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db
-        .update(posts)
+        .update(post)
         .set({ name: input.newName })
-        .where(eq(posts.id, input.id));
+        .where(eq(post.id, input.id));
     }),
 });

@@ -1,10 +1,9 @@
 "use client";
 
 import { Post } from "@/app/_components/post";
-import { api } from "@/trpc/react"; // Use the React TRPC client
-import { type Session } from "next-auth";
+import { api } from "@/trpc/react";
 
-export function PostList({ session }: { session: Session | null }) {
+export function PostList() {
   const { data: posts = [] } = api.post.getAll.useQuery();
 
   return (
@@ -13,7 +12,7 @@ export function PostList({ session }: { session: Session | null }) {
       {posts.length ? (
         <ul className="flex flex-col gap-2">
           {posts.map((post) => (
-            <Post key={post.id} post={post} session={session} />
+            <Post key={post.id} post={post} />
           ))}
         </ul>
       ) : (

@@ -1,12 +1,11 @@
-import { relations, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import {
   index,
   int,
-  primaryKey,
+  integer,
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
-import { type AdapterAccount } from "next-auth/adapters";
 
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -15,14 +14,14 @@ import { type AdapterAccount } from "next-auth/adapters";
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 
-export const posts = sqliteTable(
+export const post = sqliteTable(
   "post",
   {
     id: int("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
     name: text("name", { length: 256 }).notNull(),
     createdById: text("created_by", { length: 255 })
       .notNull()
-      .references(() => users.id),
+      .references(() => user.id),
     createdAt: int("created_at", { mode: "timestamp" })
       .default(sql`(unixepoch())`)
       .notNull(),
@@ -36,80 +35,76 @@ export const posts = sqliteTable(
   }),
 );
 
-export const users = sqliteTable("user", {
-  id: text("id", { length: 255 })
-    .notNull()
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name", { length: 255 }),
-  email: text("email", { length: 255 }).notNull(),
-  emailVerified: int("email_verified", {
-    mode: "timestamp",
-  }).default(sql`(unixepoch())`),
-  image: text("image", { length: 255 }),
+export const user = sqliteTable("user", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: integer("email_verified", { mode: "boolean" })
+    .default(false)
+    .notNull(),
+  image: text("image"),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .$defaultFn(() => new Date())
+    .$onUpdate(() => new Date())
+    .notNull(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-}));
+export const session = sqliteTable("session", {
+  id: text("id").primaryKey(),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+  token: text("token").notNull().unique(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .$onUpdate(() => new Date())
+    .notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+});
 
-export const accounts = sqliteTable(
-  "account",
-  {
-    userId: text("user_id", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    type: text("type", { length: 255 })
-      .$type<AdapterAccount["type"]>()
-      .notNull(),
-    provider: text("provider", { length: 255 }).notNull(),
-    providerAccountId: text("provider_account_id", { length: 255 }).notNull(),
-    refresh_token: text("refresh_token"),
-    access_token: text("access_token"),
-    expires_at: int("expires_at"),
-    token_type: text("token_type", { length: 255 }),
-    scope: text("scope", { length: 255 }),
-    id_token: text("id_token"),
-    session_state: text("session_state", { length: 255 }),
-  },
-  (account) => ({
-    compoundKey: primaryKey({
-      columns: [account.provider, account.providerAccountId],
-    }),
-    userIdIdx: index("account_user_id_idx").on(account.userId),
+export const account = sqliteTable("account", {
+  id: text("id").primaryKey(),
+  accountId: text("account_id").notNull(),
+  providerId: text("provider_id").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  accessToken: text("access_token"),
+  refreshToken: text("refresh_token"),
+  idToken: text("id_token"),
+  accessTokenExpiresAt: integer("access_token_expires_at", {
+    mode: "timestamp",
   }),
-);
-
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, { fields: [accounts.userId], references: [users.id] }),
-}));
-
-export const sessions = sqliteTable(
-  "session",
-  {
-    sessionToken: text("session_token", { length: 255 }).notNull().primaryKey(),
-    userId: text("userId", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    expires: int("expires", { mode: "timestamp" }).notNull(),
-  },
-  (session) => ({
-    userIdIdx: index("session_userId_idx").on(session.userId),
+  refreshTokenExpiresAt: integer("refresh_token_expires_at", {
+    mode: "timestamp",
   }),
-);
+  scope: text("scope"),
+  password: text("password"),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, { fields: [sessions.userId], references: [users.id] }),
-}));
-
-export const verificationTokens = sqliteTable(
-  "verification_token",
-  {
-    identifier: text("identifier", { length: 255 }).notNull(),
-    token: text("token", { length: 255 }).notNull(),
-    expires: int("expires", { mode: "timestamp" }).notNull(),
-  },
-  (vt) => ({
-    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
-  }),
-);
+export const verification = sqliteTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .$defaultFn(() => new Date())
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .$defaultFn(() => new Date())
+    .$onUpdate(() => new Date())
+    .notNull(),
+});

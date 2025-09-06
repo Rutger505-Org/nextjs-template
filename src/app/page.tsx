@@ -1,9 +1,14 @@
 import { PostCreate } from "@/app/_components/post-create";
 import { PostList } from "@/app/_components/post-list";
-import { auth, signIn, signOut } from "@/server/auth";
+import { SignOutButton } from "@/app/_components/sign-out-button";
+import { auth } from "@/server/auth";
+import { headers } from "next/headers";
+import Link from "next/link";
 
 export default async function Home() {
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center">
@@ -15,35 +20,17 @@ export default async function Home() {
             messages for showing usage of these tools
           </h2>
         </div>
-        {session ? (
-          <div className={"flex flex-col items-center space-y-2.5"}>
-            <span className={"text-center"}>
-              Session: {JSON.stringify(session)}
-            </span>
-            <form
-              action={async () => {
-                "use server";
-                await signOut();
-              }}
-            >
-              <button type="submit">Sign Out</button>
-            </form>
-          </div>
-        ) : (
-          <form
-            action={async () => {
-              "use server";
-              await signIn();
-            }}
-          >
-            <button type="submit">Sign In</button>
-          </form>
-        )}
+        <div className={"flex flex-col items-center space-y-2.5"}>
+          <span className={"text-center"}>
+            Session: {session ? JSON.stringify(session) : "No session"}
+          </span>
+          {session ? <SignOutButton /> : <Link href={"sign-in"}>Sign In</Link>}
+        </div>
 
         <div className={"flex flex-col gap-7"}>
           {session && <PostCreate />}
 
-          <PostList session={session} />
+          <PostList />
         </div>
       </main>
     </div>
