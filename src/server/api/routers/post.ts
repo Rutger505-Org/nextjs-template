@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-import { sendDiscordMessage } from "@/lib/discord";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { post } from "@/server/db/schema";
+import { sendDiscordMessage } from "@/server/discord";
 import { eq } from "drizzle-orm";
 
 export const postRouter = createTRPCRouter({
