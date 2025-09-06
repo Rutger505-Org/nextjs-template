@@ -19,8 +19,6 @@ export function Post({
   const [draftPostName, setDraftPostName] = useState(post.name);
   const canEdit = session?.user?.id === post.createdById;
 
-  console.log(post.createdById, session?.user?.id);
-
   const handleSave = async () => {
     try {
       await updatePostMutation.mutateAsync({
