@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function SignInPage() {
   const { data: session } = useSession();
@@ -44,10 +44,11 @@ export default function SignInPage() {
     },
   });
 
-  if (session) {
-    router.push("/");
-    return null;
-  }
+  useEffect(() => {
+    if (session) {
+      router.push("/");
+    }
+  }, [router, session]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
