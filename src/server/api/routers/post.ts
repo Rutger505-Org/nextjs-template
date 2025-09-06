@@ -10,11 +10,11 @@ import { eq } from "drizzle-orm";
 
 export const postRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.query.post.findMany({
+    const posts = await ctx.db.query.post.findMany({
       orderBy: (post, { desc }) => [desc(post.createdAt)],
     });
 
-    return post ?? null;
+    return posts ?? null;
   }),
 
   create: protectedProcedure
