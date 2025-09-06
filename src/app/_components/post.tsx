@@ -1,24 +1,22 @@
 "use client";
 
+import { sendDiscordMessage } from "@/server/discord";
+import { useSession } from "@/client/auth";
 import { api } from "@/trpc/react";
 import { type api as serverApi } from "@/trpc/server";
-import { type Session } from "next-auth";
 import { useState } from "react";
 
 export function Post({
   post,
-  session,
 }: Readonly<{
   post: Awaited<ReturnType<(typeof serverApi.post)["getAll"]>>[number];
-  session: Session | null;
 }>) {
+  const { data: session } = useSession();
   const updatePostMutation = api.post.update.useMutation();
   const [isEditing, setIsEditing] = useState(false);
   const [postName, setPostName] = useState(post.name);
   const [draftPostName, setDraftPostName] = useState(post.name);
   const canEdit = session?.user?.id === post.createdById;
-
-  console.log(post.createdById, session?.user?.id);
 
   const handleSave = async () => {
     try {
@@ -30,6 +28,7 @@ export function Post({
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update post:", error);
+      await sendDiscordMessage("Failed to update post: " + error?.toString());
     }
   };
 

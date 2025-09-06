@@ -1,3 +1,6 @@
+// Validate environment on every page
+import "@/env";
+
 import { TRPCReactProvider } from "@/trpc/react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
