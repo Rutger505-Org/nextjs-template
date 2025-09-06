@@ -6,7 +6,6 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { post } from "@/server/db/schema";
-import { sendDiscordMessage } from "@/server/discord";
 import { eq } from "drizzle-orm";
 
 export const postRouter = createTRPCRouter({
@@ -25,7 +24,6 @@ export const postRouter = createTRPCRouter({
         name: input.name,
         createdById: ctx.session.user.id,
       });
-      await sendDiscordMessage(`New post created: ${input.name}`);
     }),
 
   update: protectedProcedure
