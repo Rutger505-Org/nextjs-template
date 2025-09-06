@@ -1,7 +1,6 @@
 "use client";
 
 import { sendDiscordMessage } from "@/server/discord";
-
 import { useSession } from "@/client/auth";
 import { api } from "@/trpc/react";
 import { type api as serverApi } from "@/trpc/server";
