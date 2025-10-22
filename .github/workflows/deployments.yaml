@@ -11,5 +11,7 @@ on:
 
 jobs:
   call-workflow-passing-data:
-    uses: rutger505-org/kubernetes-infrastructure/.github/workflows/deployments.yaml@main
+    uses: Rutger505-Org/kubernetes-infrastructure/.github/workflows/deployments.yaml@main
     secrets: inherit
+    with:
+      with: "hi there!"
