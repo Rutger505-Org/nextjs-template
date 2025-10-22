@@ -7,7 +7,6 @@ jobs:
   lint:
     name: Run next lint
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,7 +23,6 @@ jobs:
   typecheck:
     name: Run typescript check
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
