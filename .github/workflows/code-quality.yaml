@@ -1,10 +1,7 @@
 name: Code quality
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches:
-      - "*"
+  workflow_call:
 
 jobs:
   lint:
