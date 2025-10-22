@@ -16,3 +16,4 @@ jobs:
   deploy:
     uses: Rutger505-Org/kubernetes-infrastructure/.github/workflows/deployments.yaml@main
     secrets: inherit
+
