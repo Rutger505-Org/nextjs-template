@@ -38,6 +38,7 @@ The following secrets must be configured per repository.
 
 - `DEPLOYMENT_AUTH_SECRET` - Auth.js secret for encrypting JWTs (generate with `bunx auth secret --raw`).
 - `DEPLOYMENT_DISCORD_WEBHOOK_URL` - Discord webhook URL for in-application alerts.
+- `DEPLOYMENT_AUTH_EMAIL_FROM` - Name and email address of the magic link sender (e.g. `Next Template`).
 
 The following secrets are configured at the organisation level and are inherited automatically — no action needed per repository.
 
@@ -46,7 +47,6 @@ The following secrets are configured at the organisation level and are inherited
 - `TAILSCALE_OAUTH_SECRET` - Tailscale OAuth secret paired with the client ID above.
 - `DOCKERHUB_USERNAME` - Docker Hub username for pushing images.
 - `DOCKERHUB_TOKEN` - Docker Hub access token.
-- `DEPLOYMENT_AUTH_EMAIL_FROM` - Name and email address of the magic link sender (e.g. `Next Template <example@email.com>`).
 - `DEPLOYMENT_AUTH_EMAIL_HOST` - SMTP host (e.g. `smtp.gmail.com`).
 - `DEPLOYMENT_AUTH_EMAIL_PORT` - SMTP port (e.g. `465`).
 - `DEPLOYMENT_AUTH_EMAIL_USER` - SMTP username (for Gmail, this is your email address).
