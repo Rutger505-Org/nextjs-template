@@ -14,6 +14,6 @@ jobs:
     uses: ./.github/workflows/code-quality.yaml
 
   deploy:
-    uses: Rutger505-Org/kubernetes-infrastructure/.github/workflows/deployments.yaml@990a3d3
+    uses: Rutger505-Org/kubernetes-infrastructure/.github/workflows/deployments.yaml@main
     secrets: inherit
 
