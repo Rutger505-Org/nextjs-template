@@ -34,17 +34,22 @@ bun dev
 
 #### Secrets
 
+The following secrets are configured at the organisation level and are inherited automatically — no action needed per repository.
+
 - `KUBECONFIG` - Kubernetes cluster config for deploying to the cluster.
 - `TAILSCALE_OAUTH_CLIENT_ID` - Tailscale OAuth client ID used to connect the CI runner to the private cluster network.
 - `TAILSCALE_OAUTH_SECRET` - Tailscale OAuth secret paired with the client ID above.
 - `DOCKERHUB_USERNAME` - Docker Hub username for pushing images.
 - `DOCKERHUB_TOKEN` - Docker Hub access token.
-- `DEPLOYMENT_AUTH_SECRET` - Auth.js secret for encrypting JWTs (generate with `bunx auth secret --raw`).
 - `DEPLOYMENT_AUTH_EMAIL_FROM` - Name and email address of the magic link sender (e.g. `Next Template <example@email.com>`).
 - `DEPLOYMENT_AUTH_EMAIL_HOST` - SMTP host (e.g. `smtp.gmail.com`).
 - `DEPLOYMENT_AUTH_EMAIL_PORT` - SMTP port (e.g. `465`).
 - `DEPLOYMENT_AUTH_EMAIL_USER` - SMTP username (for Gmail, this is your email address).
 - `DEPLOYMENT_AUTH_EMAIL_PASSWORD` - SMTP password (for Gmail, use an App Password).
+
+The following secrets must be configured per repository.
+
+- `DEPLOYMENT_AUTH_SECRET` - Auth.js secret for encrypting JWTs (generate with `bunx auth secret --raw`).
 - `DEPLOYMENT_DISCORD_WEBHOOK_URL` - Discord webhook URL for in-application alerts.
 
 ## Deployments
