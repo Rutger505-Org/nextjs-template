@@ -28,26 +28,28 @@ bun dev
 
 #### Variables
 
-- `APPLICATION_NAME` - Used as an identifier for multiple actions such as the terraform workspace.
-- `IMAGE_REPOSITORY` - Image repository to store image to.
-- `BASE_DOMAIN` - Domain where to host the application (tags deployed to this domain, pull request's to a subdomain: the sha of the commit.)
-- `DOCKERHUB_USERNAME` - Dockerhub username
-- `AUTH_EMAIL_FROM_NAME` - Name and Email address of magic link sender (e.g. `Next Template <example@email.com>`)
+- `APPLICATION_NAME` - Used as an identifier for multiple actions such as the Kubernetes deployment name and Terraform workspace.
+- `IMAGE_REPOSITORY` - Docker image repository to push the built image to (e.g. `dockerhub-username/app-name`).
+- `BASE_DOMAIN` - Domain where to host the application. Tags are deployed to this domain; pull requests to a subdomain using the commit SHA (e.g. `<sha>.yourdomain.com`).
 
 #### Secrets
 
-- `AUTH_SECRET` - AUTH secret for encrypting jwt's
-- `AUTH_EMAIL_USER` - SMTP username (for gmail, this is your email address)
-- `AUTH_EMAIL_HOST` - SMTP host (e.g. `smtp.gmail.com`)
-- `AUTH_EMAIL_PORT` - SMTP port (e.g. `465`)
-- `AUTH_EMAIL_PASSWORD` - SMTP password (for gmail, this is your app password)
-- `DEPLOYMENT_DISCORD_WEBHOOK_URL` - Discord webhook url for alerts in application
-- `DOCKERHUB_TOKEN` - Dockerhub password
+- `KUBECONFIG` - Kubernetes cluster config for deploying to the cluster.
+- `TAILSCALE_OAUTH_CLIENT_ID` - Tailscale OAuth client ID used to connect the CI runner to the private cluster network.
+- `TAILSCALE_OAUTH_SECRET` - Tailscale OAuth secret paired with the client ID above.
+- `DOCKERHUB_USERNAME` - Docker Hub username for pushing images.
+- `DOCKERHUB_TOKEN` - Docker Hub access token.
+- `DEPLOYMENT_AUTH_SECRET` - Auth.js secret for encrypting JWTs (generate with `bunx auth secret --raw`).
+- `DEPLOYMENT_AUTH_EMAIL_FROM` - Name and email address of the magic link sender (e.g. `Next Template <example@email.com>`).
+- `DEPLOYMENT_AUTH_EMAIL_HOST` - SMTP host (e.g. `smtp.gmail.com`).
+- `DEPLOYMENT_AUTH_EMAIL_PORT` - SMTP port (e.g. `465`).
+- `DEPLOYMENT_AUTH_EMAIL_USER` - SMTP username (for Gmail, this is your email address).
+- `DEPLOYMENT_AUTH_EMAIL_PASSWORD` - SMTP password (for Gmail, use an App Password).
+- `DEPLOYMENT_DISCORD_WEBHOOK_URL` - Discord webhook URL for in-application alerts.
 
 ## Deployments
 
-To configure deployment variables.
-Create a Github variable or secret and prefix it with `DEPLOYMENT_`.
+To pass additional environment variables to the running container, create a GitHub variable or secret and prefix the name with `DEPLOYMENT_`. The prefix is stripped before the value is injected into the container.
 
 ## Guides
 
