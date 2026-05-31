@@ -48,7 +48,6 @@ The following secrets are configured at the organisation level and are inherited
 - `KUBECONFIG` - Kubernetes cluster config for deploying to the cluster.
 - `TAILSCALE_OAUTH_CLIENT_ID` - Tailscale OAuth client ID used to connect the CI runner to the private cluster network.
 - `TAILSCALE_OAUTH_SECRET` - Tailscale OAuth secret paired with the client ID above.
-- `DOCKERHUB_USERNAME` - Docker Hub username for pushing images.
 - `DOCKERHUB_TOKEN` - Docker Hub access token.
 - `DEPLOYMENT_AUTH_EMAIL_HOST` - SMTP host (e.g. `smtp.gmail.com`).
 - `DEPLOYMENT_AUTH_EMAIL_PORT` - SMTP port (e.g. `465`).
