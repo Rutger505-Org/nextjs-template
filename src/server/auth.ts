@@ -29,7 +29,7 @@ export const auth = betterAuth({
       sendMagicLink: async ({ email, url }) => {
         const result = await transporter.sendMail({
           to: email,
-          from: env.AUTH_EMAIL_FROM,
+          from: `${env.AUTH_EMAIL_FROM} <${env.AUTH_EMAIL_USER}>`,
           subject: "Your sign-in link",
           text: `Click to sign in: ${url}\nThis link expires in 6 minutes.`,
           html: `<p>Click to sign in: <a href="${url}">${url}</a> this link expires in 6 minutes</p>`,
