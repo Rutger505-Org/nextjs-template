@@ -54,9 +54,13 @@ The following secrets are configured at the organisation level and are inherited
 - `DEPLOYMENT_AUTH_EMAIL_USER` - SMTP username (for Gmail, this is your email address).
 - `DEPLOYMENT_AUTH_EMAIL_PASSWORD` - SMTP password (for Gmail, use an App Password).
 
+To use a different mail server in a repository, override these as repository **secrets** with the same name. A repository variable won't work: the organisation secret takes precedence over it (see [Deployments](#deployments)).
+
 ## Deployments
 
 To pass additional environment variables to the running container, create a GitHub variable or secret and prefix the name with `DEPLOYMENT_`. The prefix is stripped before the value is injected into the container.
+
+When a variable and a secret have the same name, the secret wins, including secrets inherited from the organisation. A repository secret overrides an organisation secret with the same name.
 
 ## Guides
 
