@@ -28,7 +28,7 @@ Template repo for Rutger505-Org Next.js sites (rutgerpronk.com, relay, dijker-we
 
 ## Pitfalls
 - Deploy succeeds but HTTP 500: usually a missing env var failing zod validation in `src/env.ts`; check pod logs
-- `NEXT_PUBLIC_*` vars are inlined at build time (Docker build step), not read at runtime
+- `NEXT_PUBLIC_*` vars are inlined at build time; `DEPLOYMENT_` vars only exist at runtime, so they can't set them (set them in the Dockerfile builder stage)
 - Prod detection in `deploy/` OpenTofu: `terraform.workspace == "production"` (workspaces `production` / `pr-<N>`), not `certificate_issuer` (all envs use letsencrypt-production)
 - Fresh preview briefly serves Traefik's default cert; retry before debugging TLS
 - Namespaces `<APPLICATION_NAME>-production` / `<APPLICATION_NAME>-pr-<N>`; migrations run in an init container (`bun db:migrate`); SQLite on a PVC. OpenTofu lock stuck: delete the Lease (`deploy/README.md`)
